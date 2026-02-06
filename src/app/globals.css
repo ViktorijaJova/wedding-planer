@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  /* Modern, minimal neutrals + a soft accent */
+  --color-ivory: #f7f7f8;
+  --color-sage: #e5e7eb;
+  --color-sage-dark: #111827;
+  --color-gold: #f5a3b7;
+  --color-countdown-bg: #020617;
+  --color-primary: #111827;
+  --color-primary-foreground: #FFFFFF;
+
+  --font-script: var(--font-great-vibes);
+  --font-display: var(--font-playfair-display);
+  --font-body: var(--font-montserrat);
+}
+
+body {
+  background: var(--color-ivory);
+  color: #111827;
+  font-family: var(--font-body), sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* ──────────────────────────────
+   ENVELOPE – Video intro screen
+   ────────────────────────────── */
+
+.envelope-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  cursor: pointer;
+  background-color: #000;
+  overflow: hidden;
+  transition: opacity 0.8s ease;
+}
+
+.envelope-screen.envelope-opening {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tap hint at the bottom */
+.envelope-tap-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+  font-family: var(--font-body), sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  transition: opacity 0.3s ease;
+  animation: hint-pulse 2.5s ease-in-out infinite;
+}
+
+.envelope-tap-hint.hint-gone {
+  opacity: 0;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* ──────────────────────────────
+   SHARED UTILITIES
+   ────────────────────────────── */
+
+.card-elegant {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-padding {
+  padding: 5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 6rem 2rem;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}

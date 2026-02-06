@@ -1,0 +1,154 @@
+/* [project]/src/app/wedding-template.css [app-client] (css) */
+.wedding-header {
+  z-index: 20;
+  position: sticky;
+  top: 0;
+}
+
+.wedding-nav-link {
+  color: #111827;
+  white-space: nowrap;
+  font-family: var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  background: #fffc;
+  border: 1px solid #94a3b866;
+  border-radius: 9999px;
+  padding: .4rem .9rem;
+  font-size: .8rem;
+  text-decoration: none;
+  transition: background-color .2s, color .2s, box-shadow .2s, border-color .2s;
+  position: relative;
+}
+
+.wedding-nav-link:hover {
+  background: #94a3b81f;
+  box-shadow: 0 1px 4px #00000014;
+}
+
+.wedding-card {
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  background: #ffffffe6;
+  border: 1px solid #94a3b859;
+  border-radius: 1rem;
+  box-shadow: 0 12px 30px #0000000a, 0 2px 6px #00000008;
+}
+
+.wedding-pill {
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  border: 1px solid #94a3b859;
+  border-radius: 9999px;
+  padding: .15rem .6rem;
+  font-size: .7rem;
+}
+
+.seating-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  display: grid;
+}
+
+.seating-table {
+  padding: 1.25rem 1rem 1rem;
+  position: relative;
+}
+
+.seating-table-circle {
+  background: radial-gradient(circle at 30% 20%, #f9fafbf7, #f9fafbe0);
+  border: 1px solid #94a3b899;
+  border-radius: 9999px;
+  width: 180px;
+  height: 180px;
+  margin: .5rem auto 0;
+  position: relative;
+  box-shadow: inset 0 0 0 1px #ffffffb3, 0 10px 25px #0000000f;
+}
+
+.seating-seat {
+  text-align: center;
+  cursor: pointer;
+  background: #ffffffe6;
+  border: 1px solid #94a3b899;
+  border-radius: 9999px;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: .15rem;
+  font-size: .65rem;
+  transition: transform .12s, box-shadow .12s, border-color .12s, background-color .12s;
+  display: flex;
+  position: absolute;
+  box-shadow: 0 2px 4px #00000014;
+}
+
+.seating-seat.empty {
+  color: #11182780;
+  background: #f9fafbe6;
+}
+
+.seating-seat.occupied {
+  background: #fff;
+}
+
+.seating-seat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px #0000001f;
+}
+
+.seating-seat-drop-target {
+  background: #f3f4f6f5;
+  border-color: #0f172ae6;
+}
+
+.guest-chip {
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  background: #fffffff2;
+  border: 1px solid #94a3b8cc;
+  border-radius: 9999px;
+  align-items: center;
+  gap: .4rem;
+  padding: .2rem .75rem;
+  font-size: .75rem;
+  transition: transform .1s, box-shadow .1s, border-color .1s, background-color .1s;
+  display: inline-flex;
+}
+
+.guest-chip:active {
+  cursor: grabbing;
+  transform: scale(.98);
+  box-shadow: 0 4px 10px #0000001f;
+}
+
+.guest-chip-unassigned {
+  background: #f8fafcf2;
+}
+
+.guest-chip-small-tag {
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: #11182799;
+  font-size: .6rem;
+}
+
+.scroll-fade {
+  position: relative;
+}
+
+.scroll-fade:after {
+  content: "";
+  inset-inline-end: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, #f7f8fa00 0%, #f7f8faf5 100%);
+  width: 3rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+/*# sourceMappingURL=src_app_wedding-template_css_bad6b30c._.single.css.map*/
