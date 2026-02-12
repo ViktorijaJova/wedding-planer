@@ -228,6 +228,16 @@ function WeddingTemplateProvider({ children }) {
                         }["WeddingTemplateProvider.useMemo[value]"]);
                     }
                 })["WeddingTemplateProvider.useMemo[value]"],
+                clearAllGuests: ({
+                    "WeddingTemplateProvider.useMemo[value]": ()=>{
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    guests: []
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
                 addTable: ({
                     "WeddingTemplateProvider.useMemo[value]": (tableInput)=>{
                         const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `table-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -667,7 +677,7 @@ function WeddingTemplateProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/components/wedding-template/WeddingTemplateProvider.tsx",
-        lineNumber: 768,
+        lineNumber: 775,
         columnNumber: 5
     }, this);
 }

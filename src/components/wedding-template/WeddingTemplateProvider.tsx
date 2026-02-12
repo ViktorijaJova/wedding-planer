@@ -130,6 +130,7 @@ type WeddingTemplateContextValue = {
   addGuest: (guest: Omit<Guest, "id">) => void;
   updateGuest: (id: string, updates: Partial<Guest>) => void;
   removeGuest: (id: string) => void;
+  clearAllGuests: () => void;
   addTable: (table: Omit<Table, "id">) => void;
   updateTable: (id: string, updates: Partial<Table>) => void;
   removeTable: (id: string) => void;
@@ -419,6 +420,12 @@ export function WeddingTemplateProvider({
         setState((prev) => ({
           ...prev,
           guests: prev.guests.filter((g) => g.id !== id),
+        }));
+      },
+      clearAllGuests: () => {
+        setState((prev) => ({
+          ...prev,
+          guests: [],
         }));
       },
       addTable: (tableInput) => {

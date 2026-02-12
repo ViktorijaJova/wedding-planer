@@ -6,6 +6,7 @@ import {
   RsvpStatus,
   useWeddingTemplate,
 } from "@/components/wedding-template/WeddingTemplateProvider";
+import { getImportedGuests, getNewGuestsToImport } from "@/lib/import-guests";
 
 type FilterSide = "all" | "bride" | "groom" | "both";
 type FilterRsvp = "all" | RsvpStatus;
@@ -16,6 +17,7 @@ export default function GuestsPage() {
     addGuest,
     updateGuest,
     removeGuest,
+    clearAllGuests,
   } = useWeddingTemplate();
 
   const [name, setName] = useState("");
@@ -103,6 +105,18 @@ export default function GuestsPage() {
     setNotes("");
   }
 
+  function handleImportGuests() {
+    const newGuests = getNewGuestsToImport(guests);
+    newGuests.forEach((guest) => {
+      addGuest({
+        ...guest,
+        tableId: null,
+        seatIndex: null,
+        dayGuest: true,
+      });
+    });
+  }
+
   function toggleBooleanField(id: string, field: "saveTheDateSent" | "inviteSent" | "plusOne") {
     const guest = guests.find((g) => g.id === id);
     if (!guest) return;
@@ -170,6 +184,25 @@ export default function GuestsPage() {
               <dd className="mt-1">{totals.plusOne}</dd>
             </div>
           </dl>
+        </div>
+
+        <div className="mt-4 flex gap-3">
+          <button
+            onClick={handleImportGuests}
+            className="inline-flex items-center justify-center rounded-full border border-sage/40 bg-sage/10 text-xs font-semibold uppercase tracking-[0.22em] text-sage-dark px-4 py-2 shadow-sm transition hover:bg-sage/20 hover:shadow-md"
+          >
+            Import guest list
+          </button>
+          <button
+            onClick={() => {
+              if (confirm("Are you sure you want to remove all guests? This cannot be undone.")) {
+                clearAllGuests();
+              }
+            }}
+            className="inline-flex items-center justify-center rounded-full border border-red-300/60 bg-red-50 text-xs font-semibold uppercase tracking-[0.22em] text-red-700 px-4 py-2 shadow-sm transition hover:bg-red-100 hover:shadow-md"
+          >
+            Clear all guests
+          </button>
         </div>
 
         <form
