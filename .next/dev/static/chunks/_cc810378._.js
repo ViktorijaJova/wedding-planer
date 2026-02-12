@@ -28,6 +28,8 @@ function createInitialState() {
         tables: [],
         vendors: [],
         timeline: [],
+        music: [],
+        weddingParty: [],
         inspiration: {
             photoInspo: "",
             videoInspo: "",
@@ -138,7 +140,43 @@ function reviveState(raw) {
                     data: String(file.data || ""),
                     uploadedAt: String(file.uploadedAt || new Date().toISOString())
                 })) : []
-        }
+        },
+        music: Array.isArray(data.music) ? data.music.map((m, index)=>({
+                id: String(m.id || `music-${index + 1}`),
+                title: String(m.title || ""),
+                artist: String(m.artist || ""),
+                category: [
+                    "ceremony",
+                    "cocktail",
+                    "first-dance",
+                    "dinner",
+                    "party",
+                    "special",
+                    "do-not-play"
+                ].includes(m.category) ? m.category : "party",
+                notes: m.notes ? String(m.notes) : undefined
+            })) : [],
+        weddingParty: Array.isArray(data.weddingParty) ? data.weddingParty.map((p, index)=>({
+                id: String(p.id || `party-${index + 1}`),
+                name: String(p.name || ""),
+                role: [
+                    "maid-of-honor",
+                    "best-man",
+                    "bridesmaid",
+                    "groomsman",
+                    "flower-girl",
+                    "ring-bearer",
+                    "usher",
+                    "reader",
+                    "officiant",
+                    "other"
+                ].includes(p.role) ? p.role : "other",
+                side: p.side === "bride" || p.side === "groom" ? p.side : "bride",
+                phone: p.phone ? String(p.phone) : undefined,
+                email: p.email ? String(p.email) : undefined,
+                outfit: p.outfit ? String(p.outfit) : undefined,
+                notes: p.notes ? String(p.notes) : undefined
+            })) : []
     };
 }
 function WeddingTemplateProvider({ children }) {
@@ -234,6 +272,35 @@ function WeddingTemplateProvider({ children }) {
                             "WeddingTemplateProvider.useMemo[value]": (prev)=>({
                                     ...prev,
                                     guests: []
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                bulkImportGuests: ({
+                    "WeddingTemplateProvider.useMemo[value]": (guestsToImport)=>{
+                        const newGuests = guestsToImport.map({
+                            "WeddingTemplateProvider.useMemo[value].newGuests": (guest)=>({
+                                    id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `guest-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                                    name: guest.name,
+                                    side: guest.side,
+                                    group: guest.group,
+                                    dayGuest: guest.dayGuest ?? true,
+                                    saveTheDateSent: guest.saveTheDateSent ?? false,
+                                    inviteSent: guest.inviteSent ?? false,
+                                    rsvp: guest.rsvp ?? "pending",
+                                    plusOne: guest.plusOne ?? false,
+                                    notes: guest.notes ?? "",
+                                    tableId: guest.tableId ?? null,
+                                    seatIndex: guest.seatIndex ?? null
+                                })
+                        }["WeddingTemplateProvider.useMemo[value].newGuests"]);
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    guests: [
+                                        ...prev.guests,
+                                        ...newGuests
+                                    ]
                                 })
                         }["WeddingTemplateProvider.useMemo[value]"]);
                     }
@@ -667,6 +734,90 @@ function WeddingTemplateProvider({ children }) {
                                 })
                         }["WeddingTemplateProvider.useMemo[value]"]);
                     }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                addMusicItem: ({
+                    "WeddingTemplateProvider.useMemo[value]": (musicInput)=>{
+                        const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `music-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                        const musicItem = {
+                            id,
+                            title: musicInput.title,
+                            artist: musicInput.artist,
+                            category: musicInput.category,
+                            notes: musicInput.notes
+                        };
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    music: [
+                                        ...prev.music,
+                                        musicItem
+                                    ]
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                removeMusicItem: ({
+                    "WeddingTemplateProvider.useMemo[value]": (id)=>{
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    music: prev.music.filter({
+                                        "WeddingTemplateProvider.useMemo[value]": (m)=>m.id !== id
+                                    }["WeddingTemplateProvider.useMemo[value]"])
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                addPartyMember: ({
+                    "WeddingTemplateProvider.useMemo[value]": (memberInput)=>{
+                        const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `party-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                        const member = {
+                            id,
+                            name: memberInput.name,
+                            role: memberInput.role,
+                            side: memberInput.side,
+                            phone: memberInput.phone,
+                            email: memberInput.email,
+                            outfit: memberInput.outfit,
+                            notes: memberInput.notes
+                        };
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    weddingParty: [
+                                        ...prev.weddingParty,
+                                        member
+                                    ]
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                updatePartyMember: ({
+                    "WeddingTemplateProvider.useMemo[value]": (id, updates)=>{
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    weddingParty: prev.weddingParty.map({
+                                        "WeddingTemplateProvider.useMemo[value]": (m)=>m.id === id ? {
+                                                ...m,
+                                                ...updates
+                                            } : m
+                                    }["WeddingTemplateProvider.useMemo[value]"])
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
+                })["WeddingTemplateProvider.useMemo[value]"],
+                removePartyMember: ({
+                    "WeddingTemplateProvider.useMemo[value]": (id)=>{
+                        setState({
+                            "WeddingTemplateProvider.useMemo[value]": (prev)=>({
+                                    ...prev,
+                                    weddingParty: prev.weddingParty.filter({
+                                        "WeddingTemplateProvider.useMemo[value]": (m)=>m.id !== id
+                                    }["WeddingTemplateProvider.useMemo[value]"])
+                                })
+                        }["WeddingTemplateProvider.useMemo[value]"]);
+                    }
                 })["WeddingTemplateProvider.useMemo[value]"]
             })
     }["WeddingTemplateProvider.useMemo[value]"], [
@@ -677,7 +828,7 @@ function WeddingTemplateProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/components/wedding-template/WeddingTemplateProvider.tsx",
-        lineNumber: 775,
+        lineNumber: 953,
         columnNumber: 5
     }, this);
 }

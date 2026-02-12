@@ -33,6 +33,8 @@ function createInitialState() {
         tables: [],
         vendors: [],
         timeline: [],
+        music: [],
+        weddingParty: [],
         inspiration: {
             photoInspo: "",
             videoInspo: "",
@@ -143,7 +145,43 @@ function reviveState(raw) {
                     data: String(file.data || ""),
                     uploadedAt: String(file.uploadedAt || new Date().toISOString())
                 })) : []
-        }
+        },
+        music: Array.isArray(data.music) ? data.music.map((m, index)=>({
+                id: String(m.id || `music-${index + 1}`),
+                title: String(m.title || ""),
+                artist: String(m.artist || ""),
+                category: [
+                    "ceremony",
+                    "cocktail",
+                    "first-dance",
+                    "dinner",
+                    "party",
+                    "special",
+                    "do-not-play"
+                ].includes(m.category) ? m.category : "party",
+                notes: m.notes ? String(m.notes) : undefined
+            })) : [],
+        weddingParty: Array.isArray(data.weddingParty) ? data.weddingParty.map((p, index)=>({
+                id: String(p.id || `party-${index + 1}`),
+                name: String(p.name || ""),
+                role: [
+                    "maid-of-honor",
+                    "best-man",
+                    "bridesmaid",
+                    "groomsman",
+                    "flower-girl",
+                    "ring-bearer",
+                    "usher",
+                    "reader",
+                    "officiant",
+                    "other"
+                ].includes(p.role) ? p.role : "other",
+                side: p.side === "bride" || p.side === "groom" ? p.side : "bride",
+                phone: p.phone ? String(p.phone) : undefined,
+                email: p.email ? String(p.email) : undefined,
+                outfit: p.outfit ? String(p.outfit) : undefined,
+                notes: p.notes ? String(p.notes) : undefined
+            })) : []
     };
 }
 function WeddingTemplateProvider({ children }) {
@@ -206,6 +244,29 @@ function WeddingTemplateProvider({ children }) {
                 setState((prev)=>({
                         ...prev,
                         guests: []
+                    }));
+            },
+            bulkImportGuests: (guestsToImport)=>{
+                const newGuests = guestsToImport.map((guest)=>({
+                        id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `guest-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                        name: guest.name,
+                        side: guest.side,
+                        group: guest.group,
+                        dayGuest: guest.dayGuest ?? true,
+                        saveTheDateSent: guest.saveTheDateSent ?? false,
+                        inviteSent: guest.inviteSent ?? false,
+                        rsvp: guest.rsvp ?? "pending",
+                        plusOne: guest.plusOne ?? false,
+                        notes: guest.notes ?? "",
+                        tableId: guest.tableId ?? null,
+                        seatIndex: guest.seatIndex ?? null
+                    }));
+                setState((prev)=>({
+                        ...prev,
+                        guests: [
+                            ...prev.guests,
+                            ...newGuests
+                        ]
                     }));
             },
             addTable: (tableInput)=>{
@@ -499,6 +560,64 @@ function WeddingTemplateProvider({ children }) {
                             files: prev.inspiration.files.filter((file)=>file.id !== id)
                         }
                     }));
+            },
+            addMusicItem: (musicInput)=>{
+                const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `music-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                const musicItem = {
+                    id,
+                    title: musicInput.title,
+                    artist: musicInput.artist,
+                    category: musicInput.category,
+                    notes: musicInput.notes
+                };
+                setState((prev)=>({
+                        ...prev,
+                        music: [
+                            ...prev.music,
+                            musicItem
+                        ]
+                    }));
+            },
+            removeMusicItem: (id)=>{
+                setState((prev)=>({
+                        ...prev,
+                        music: prev.music.filter((m)=>m.id !== id)
+                    }));
+            },
+            addPartyMember: (memberInput)=>{
+                const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `party-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                const member = {
+                    id,
+                    name: memberInput.name,
+                    role: memberInput.role,
+                    side: memberInput.side,
+                    phone: memberInput.phone,
+                    email: memberInput.email,
+                    outfit: memberInput.outfit,
+                    notes: memberInput.notes
+                };
+                setState((prev)=>({
+                        ...prev,
+                        weddingParty: [
+                            ...prev.weddingParty,
+                            member
+                        ]
+                    }));
+            },
+            updatePartyMember: (id, updates)=>{
+                setState((prev)=>({
+                        ...prev,
+                        weddingParty: prev.weddingParty.map((m)=>m.id === id ? {
+                                ...m,
+                                ...updates
+                            } : m)
+                    }));
+            },
+            removePartyMember: (id)=>{
+                setState((prev)=>({
+                        ...prev,
+                        weddingParty: prev.weddingParty.filter((m)=>m.id !== id)
+                    }));
             }
         }), [
         state
@@ -508,7 +627,7 @@ function WeddingTemplateProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/components/wedding-template/WeddingTemplateProvider.tsx",
-        lineNumber: 775,
+        lineNumber: 953,
         columnNumber: 5
     }, this);
 }
