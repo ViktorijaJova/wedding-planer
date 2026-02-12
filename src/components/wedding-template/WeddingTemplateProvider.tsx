@@ -93,6 +93,46 @@ type Settings = {
   venueName?: string;
 };
 
+export type MusicCategory =
+  | "ceremony"
+  | "cocktail"
+  | "first-dance"
+  | "dinner"
+  | "party"
+  | "special"
+  | "do-not-play";
+
+export type PartyMemberRole =
+  | "maid-of-honor"
+  | "best-man"
+  | "bridesmaid"
+  | "groomsman"
+  | "flower-girl"
+  | "ring-bearer"
+  | "usher"
+  | "reader"
+  | "officiant"
+  | "other";
+
+export type PartyMember = {
+  id: string;
+  name: string;
+  role: PartyMemberRole;
+  side: "bride" | "groom";
+  phone?: string;
+  email?: string;
+  outfit?: string;
+  notes?: string;
+};
+
+export type MusicItem = {
+  id: string;
+  title: string;
+  artist: string;
+  category: MusicCategory;
+  notes?: string;
+};
+
 export type InspirationBoard = {
   photoInspo: string;
   videoInspo: string;
@@ -122,6 +162,8 @@ export type WeddingTemplateState = {
   tables: Table[];
   vendors: Vendor[];
   timeline: TimelineItem[];
+  music: MusicItem[];
+  weddingParty: PartyMember[];
   inspiration: InspirationBoard;
 };
 
@@ -131,6 +173,7 @@ type WeddingTemplateContextValue = {
   updateGuest: (id: string, updates: Partial<Guest>) => void;
   removeGuest: (id: string) => void;
   clearAllGuests: () => void;
+  bulkImportGuests: (guests: Omit<Guest, "id">[]) => void;
   addTable: (table: Omit<Table, "id">) => void;
   updateTable: (id: string, updates: Partial<Table>) => void;
   removeTable: (id: string) => void;
@@ -146,6 +189,11 @@ type WeddingTemplateContextValue = {
   removeTimelineImage: (itemId: string, imageId: string) => void;
   uploadTimelineFile: (itemId: string, file: File) => Promise<void>;
   removeTimelineFile: (itemId: string, fileId: string) => void;
+  addMusicItem: (item: Omit<MusicItem, "id">) => void;
+  removeMusicItem: (id: string) => void;
+  addPartyMember: (member: Omit<PartyMember, "id">) => void;
+  updatePartyMember: (id: string, updates: Partial<PartyMember>) => void;
+  removePartyMember: (id: string) => void;
   updateInspiration: (updates: Partial<InspirationBoard>) => void;
   uploadInspirationImage: (file: File) => Promise<void>;
   removeInspirationImage: (id: string) => void;
@@ -171,6 +219,8 @@ function createInitialState(): WeddingTemplateState {
     tables: [],
     vendors: [],
     timeline: [],
+    music: [],
+    weddingParty: [],
     inspiration: {
       photoInspo: "",
       videoInspo: "",
@@ -341,6 +391,54 @@ function reviveState(raw: unknown): WeddingTemplateState {
           }))
         : [],
     },
+    music: Array.isArray(data.music)
+      ? data.music.map((m: any, index: number) => ({
+          id: String(m.id || `music-${index + 1}`),
+          title: String(m.title || ""),
+          artist: String(m.artist || ""),
+          category: (
+            [
+              "ceremony",
+              "cocktail",
+              "first-dance",
+              "dinner",
+              "party",
+              "special",
+              "do-not-play",
+            ] as MusicCategory[]
+          ).includes(m.category)
+            ? m.category
+            : "party",
+          notes: m.notes ? String(m.notes) : undefined,
+        }))
+      : [],
+    weddingParty: Array.isArray(data.weddingParty)
+      ? data.weddingParty.map((p: any, index: number) => ({
+          id: String(p.id || `party-${index + 1}`),
+          name: String(p.name || ""),
+          role: (
+            [
+              "maid-of-honor",
+              "best-man",
+              "bridesmaid",
+              "groomsman",
+              "flower-girl",
+              "ring-bearer",
+              "usher",
+              "reader",
+              "officiant",
+              "other",
+            ] as PartyMemberRole[]
+          ).includes(p.role)
+            ? p.role
+            : "other",
+          side: p.side === "bride" || p.side === "groom" ? p.side : "bride",
+          phone: p.phone ? String(p.phone) : undefined,
+          email: p.email ? String(p.email) : undefined,
+          outfit: p.outfit ? String(p.outfit) : undefined,
+          notes: p.notes ? String(p.notes) : undefined,
+        }))
+      : [],
   };
 }
 
@@ -426,6 +524,29 @@ export function WeddingTemplateProvider({
         setState((prev) => ({
           ...prev,
           guests: [],
+        }));
+      },
+      bulkImportGuests: (guestsToImport) => {
+        const newGuests = guestsToImport.map((guest) => ({
+          id:
+            typeof crypto !== "undefined" && "randomUUID" in crypto
+              ? crypto.randomUUID()
+              : `guest-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          name: guest.name,
+          side: guest.side,
+          group: guest.group,
+          dayGuest: guest.dayGuest ?? true,
+          saveTheDateSent: guest.saveTheDateSent ?? false,
+          inviteSent: guest.inviteSent ?? false,
+          rsvp: guest.rsvp ?? ("pending" as RsvpStatus),
+          plusOne: guest.plusOne ?? false,
+          notes: guest.notes ?? "",
+          tableId: guest.tableId ?? null,
+          seatIndex: guest.seatIndex ?? null,
+        }));
+        setState((prev) => ({
+          ...prev,
+          guests: [...prev.guests, ...newGuests],
         }));
       },
       addTable: (tableInput) => {
@@ -765,6 +886,63 @@ export function WeddingTemplateProvider({
             ...prev.inspiration,
             files: prev.inspiration.files.filter((file) => file.id !== id),
           },
+        }));
+      },
+      addMusicItem: (musicInput) => {
+        const id =
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `music-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const musicItem: MusicItem = {
+          id,
+          title: musicInput.title,
+          artist: musicInput.artist,
+          category: musicInput.category,
+          notes: musicInput.notes,
+        };
+        setState((prev) => ({
+          ...prev,
+          music: [...prev.music, musicItem],
+        }));
+      },
+      removeMusicItem: (id: string) => {
+        setState((prev) => ({
+          ...prev,
+          music: prev.music.filter((m) => m.id !== id),
+        }));
+      },
+      addPartyMember: (memberInput) => {
+        const id =
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `party-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const member: PartyMember = {
+          id,
+          name: memberInput.name,
+          role: memberInput.role,
+          side: memberInput.side,
+          phone: memberInput.phone,
+          email: memberInput.email,
+          outfit: memberInput.outfit,
+          notes: memberInput.notes,
+        };
+        setState((prev) => ({
+          ...prev,
+          weddingParty: [...prev.weddingParty, member],
+        }));
+      },
+      updatePartyMember: (id, updates) => {
+        setState((prev) => ({
+          ...prev,
+          weddingParty: prev.weddingParty.map((m) =>
+            m.id === id ? { ...m, ...updates } : m
+          ),
+        }));
+      },
+      removePartyMember: (id: string) => {
+        setState((prev) => ({
+          ...prev,
+          weddingParty: prev.weddingParty.filter((m) => m.id !== id),
         }));
       },
     }),

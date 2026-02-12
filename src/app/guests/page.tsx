@@ -18,6 +18,7 @@ export default function GuestsPage() {
     updateGuest,
     removeGuest,
     clearAllGuests,
+    bulkImportGuests,
   } = useWeddingTemplate();
 
   const [name, setName] = useState("");
@@ -107,14 +108,7 @@ export default function GuestsPage() {
 
   function handleImportGuests() {
     const newGuests = getNewGuestsToImport(guests);
-    newGuests.forEach((guest) => {
-      addGuest({
-        ...guest,
-        tableId: null,
-        seatIndex: null,
-        dayGuest: true,
-      });
-    });
+    bulkImportGuests(newGuests);
   }
 
   function toggleBooleanField(id: string, field: "saveTheDateSent" | "inviteSent" | "plusOne") {
