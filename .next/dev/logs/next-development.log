@@ -1,2 +1,94 @@
-[00:00:01.222] Server  WARN    ⚠ Turbopack's filesystem cache has been deleted because we previously detected an internal error in Turbopack. Builds or page loads may be slower as a result.
-[00:00:01.661] Server  LOG     ✓ Ready in 1213ms
+[00:00:01.476] Server  LOG     ✓ Ready in 1023ms
+[00:00:12.114] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:41.703] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:00:45.956] Server  LOG     ✓ Compiled in 39ms
+[00:00:54.814] Server  LOG     ✓ Compiled in 39ms
+[00:01:04.108] Server  LOG     ✓ Compiled in 57ms
+[00:01:15.419] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:04.516] Server  LOG     ✓ Compiled in 38ms
+[00:02:10.234] Server  LOG     ✓ Compiled in 35ms
+[00:03:10.318] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./src/components/wedding-template/WeddingTemplateProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:03:10.410] Server  LOG     ✓ Compiled in 38ms
+[00:03:10.758] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:12.315] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <LoadingBoundary name="guests/" loading={null}>
+      <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <InnerLayoutRouter url="/guests" tree={[...]} params={{}} cacheNode={{rsc:<Fragment>, ...}} ...>
+              <SegmentViewNode type="page" pagePath="guests/pag...">
+                <SegmentTrieNode>
+                <ClientPageRoot Component={function GuestsPage} serverProvidedParams={{...}}>
+                  <GuestsPage params={Promise} searchParams={Promise}>
+                    <div className="space-y-5 ...">
+                      <section className="wedding-ca...">
+                        <div className="flex flex-...">
+                          <div>
+                          <dl className="grid grid-...">
+                            <div>
+                              <dt>
+                              <dd className="mt-1 font-display text-lg text-sage-dark">
++                               1424
+-                               0
+                            ...
+                        ...
+                      ...
+              ...
+            ...
+
+[00:03:13.217] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./src/components/wedding-template/WeddingTemplateProvider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:03:13.291] Server  LOG     ✓ Compiled in 37ms
+[00:03:13.493] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:15.083] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <LoadingBoundary name="guests/" loading={null}>
+      <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+        <RedirectBoundary>
+          <RedirectErrorBoundary router={{...}}>
+            <InnerLayoutRouter url="/guests" tree={[...]} params={{}} cacheNode={{rsc:<Fragment>, ...}} ...>
+              <SegmentViewNode type="page" pagePath="guests/pag...">
+                <SegmentTrieNode>
+                <ClientPageRoot Component={function GuestsPage} serverProvidedParams={{...}}>
+                  <GuestsPage params={Promise} searchParams={Promise}>
+                    <div className="space-y-5 ...">
+                      <section className="wedding-ca...">
+                        <div className="flex flex-...">
+                          <div>
+                          <dl className="grid grid-...">
+                            <div>
+                              <dt>
+                              <dd className="mt-1 font-display text-lg text-sage-dark">
++                               1424
+-                               0
+                            ...
+                        ...
+                      ...
+              ...
+            ...
+
+[00:03:18.175] Server  LOG     ✓ Compiled in 38ms
+[00:03:22.566] Server  LOG     ✓ Compiled in 104ms
+[00:03:41.268] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior

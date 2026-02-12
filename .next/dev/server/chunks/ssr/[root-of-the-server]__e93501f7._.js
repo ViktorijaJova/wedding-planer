@@ -202,6 +202,12 @@ function WeddingTemplateProvider({ children }) {
                         guests: prev.guests.filter((g)=>g.id !== id)
                     }));
             },
+            clearAllGuests: ()=>{
+                setState((prev)=>({
+                        ...prev,
+                        guests: []
+                    }));
+            },
             addTable: (tableInput)=>{
                 const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `table-${Date.now()}-${Math.random().toString(16).slice(2)}`;
                 const table = {
@@ -502,7 +508,7 @@ function WeddingTemplateProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/components/wedding-template/WeddingTemplateProvider.tsx",
-        lineNumber: 768,
+        lineNumber: 775,
         columnNumber: 5
     }, this);
 }
