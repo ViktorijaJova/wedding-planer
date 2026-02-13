@@ -199,6 +199,7 @@ type WeddingTemplateContextValue = {
   removeInspirationImage: (id: string) => void;
   uploadInspirationFile: (file: File) => Promise<void>;
   removeInspirationFile: (id: string) => void;
+  replaceState: (newState: WeddingTemplateState) => void;
 };
 
 const STORAGE_KEY = "wedding-template-state-v1";
@@ -944,6 +945,9 @@ export function WeddingTemplateProvider({
           ...prev,
           weddingParty: prev.weddingParty.filter((m) => m.id !== id),
         }));
+      },
+      replaceState: (newState: WeddingTemplateState) => {
+        setState(reviveState(newState));
       },
     }),
     [state]

@@ -14,7 +14,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$wedding
 ;
 ;
 function TimelinePage() {
-    const { state: { timeline, settings }, addTimelineItem, updateTimelineItem, removeTimelineItem } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$wedding$2d$template$2f$WeddingTemplateProvider$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useWeddingTemplate"])();
+    const { state: { timeline, settings }, addTimelineItem, updateTimelineItem, removeTimelineItem, uploadTimelineImage, removeTimelineImage, uploadTimelineFile, removeTimelineFile } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$wedding$2d$template$2f$WeddingTemplateProvider$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useWeddingTemplate"])();
     const [time, setTime] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [title, setTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [location, setLocation] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
@@ -22,6 +22,11 @@ function TimelinePage() {
     const [notes, setNotes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [sortMode, setSortMode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("time");
     const [printMode, setPrintMode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [expandedItem, setExpandedItem] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [uploadingImage, setUploadingImage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
+    const [uploadingFile, setUploadingFile] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
+    const imageInputRefs = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])({});
+    const fileInputRefs = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])({});
     const sortedTimeline = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
         if (sortMode === "manual") return timeline;
         // Very soft sort by time if it looks like HH:MM
@@ -47,7 +52,9 @@ function TimelinePage() {
             title: title.trim(),
             location: location.trim() || undefined,
             people: people.trim() || undefined,
-            notes: notes.trim() || undefined
+            notes: notes.trim() || undefined,
+            images: [],
+            files: []
         });
         setTime("");
         setTitle("");
@@ -55,6 +62,50 @@ function TimelinePage() {
         setPeople("");
         setNotes("");
     }
+    const handleImageUpload = async (itemId, e)=>{
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploadingImage((prev)=>({
+                ...prev,
+                [itemId]: true
+            }));
+        try {
+            await uploadTimelineImage(itemId, file);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Failed to upload image");
+        } finally{
+            setUploadingImage((prev)=>({
+                    ...prev,
+                    [itemId]: false
+                }));
+            if (imageInputRefs.current[itemId]) {
+                imageInputRefs.current[itemId].value = "";
+            }
+        }
+    };
+    const handleFileUpload = async (itemId, e)=>{
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploadingFile((prev)=>({
+                ...prev,
+                [itemId]: true
+            }));
+        try {
+            await uploadTimelineFile(itemId, file);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            alert("Failed to upload file");
+        } finally{
+            setUploadingFile((prev)=>({
+                    ...prev,
+                    [itemId]: false
+                }));
+            if (fileInputRefs.current[itemId]) {
+                fileInputRefs.current[itemId].value = "";
+            }
+        }
+    };
     function friendlyDateLabel() {
         return settings.weddingDate || "Wedding day";
     }
@@ -74,7 +125,7 @@ function TimelinePage() {
                                         children: "Timeline"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 68,
+                                        lineNumber: 115,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -82,7 +133,7 @@ function TimelinePage() {
                                         children: "Wedding day schedule"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 71,
+                                        lineNumber: 118,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -95,7 +146,7 @@ function TimelinePage() {
                                                 children: "what happens, when, and who"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 77,
+                                                lineNumber: 124,
                                                 columnNumber: 15
                                             }, this),
                                             " ",
@@ -103,13 +154,13 @@ function TimelinePage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 74,
+                                        lineNumber: 121,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 67,
+                                lineNumber: 114,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -120,7 +171,7 @@ function TimelinePage() {
                                         children: "Wedding date"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 82,
+                                        lineNumber: 129,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -128,7 +179,7 @@ function TimelinePage() {
                                         children: friendlyDateLabel()
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 85,
+                                        lineNumber: 132,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -143,13 +194,13 @@ function TimelinePage() {
                                                 children: sortMode === "time" ? "time" : "manual order"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 90,
+                                                lineNumber: 137,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 88,
+                                        lineNumber: 135,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -159,19 +210,19 @@ function TimelinePage() {
                                         children: printMode ? "Exit print view" : "Print-friendly view"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 100,
+                                        lineNumber: 147,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 81,
+                                lineNumber: 128,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/timeline/page.tsx",
-                        lineNumber: 66,
+                        lineNumber: 113,
                         columnNumber: 9
                     }, this),
                     !printMode && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -189,131 +240,13 @@ function TimelinePage() {
                                                 children: "Time"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 117,
+                                                lineNumber: 164,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                 value: time,
                                                 onChange: (e)=>setTime(e.target.value),
                                                 placeholder: "e.g. 14:30, After ceremony",
-                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 120,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 116,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "space-y-1.5",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
-                                                children: "Where"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 128,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                value: location,
-                                                onChange: (e)=>setLocation(e.target.value),
-                                                placeholder: "Ceremony, church, venue terrace...",
-                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 131,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 127,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 115,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2 rounded-lg border border-sage/20 bg-ivory/70 p-3",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "space-y-1.5",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
-                                                children: "What happens"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 142,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                value: title,
-                                                onChange: (e)=>setTitle(e.target.value),
-                                                placeholder: "Ceremony, First dance, Cake cutting...",
-                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 145,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 141,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "space-y-1.5",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
-                                                children: "Who is involved"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 153,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                value: people,
-                                                onChange: (e)=>setPeople(e.target.value),
-                                                placeholder: "E.g. Viktorija & partner, parents, band, photographer",
-                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 156,
-                                                columnNumber: 17
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 152,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "space-y-1.5",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
-                                                children: "Notes"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/timeline/page.tsx",
-                                                lineNumber: 164,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                                value: notes,
-                                                onChange: (e)=>setNotes(e.target.value),
-                                                rows: 2,
-                                                placeholder: "Special songs, reminders, who walks when, speeches...",
                                                 className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/timeline/page.tsx",
@@ -327,6 +260,124 @@ function TimelinePage() {
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-1.5",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
+                                                children: "Where"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 175,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                value: location,
+                                                onChange: (e)=>setLocation(e.target.value),
+                                                placeholder: "Ceremony, church, venue terrace...",
+                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 178,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/timeline/page.tsx",
+                                        lineNumber: 174,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/timeline/page.tsx",
+                                lineNumber: 162,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2 rounded-lg border border-sage/20 bg-ivory/70 p-3",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-1.5",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
+                                                children: "What happens"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 189,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                value: title,
+                                                onChange: (e)=>setTitle(e.target.value),
+                                                placeholder: "Ceremony, First dance, Cake cutting...",
+                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 192,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/timeline/page.tsx",
+                                        lineNumber: 188,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-1.5",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
+                                                children: "Who is involved"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 200,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                value: people,
+                                                onChange: (e)=>setPeople(e.target.value),
+                                                placeholder: "E.g. Viktorija & partner, parents, band, photographer",
+                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 203,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/timeline/page.tsx",
+                                        lineNumber: 199,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "space-y-1.5",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-xs font-medium uppercase tracking-[0.18em] text-sage-dark/80",
+                                                children: "Notes"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 211,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                                value: notes,
+                                                onChange: (e)=>setNotes(e.target.value),
+                                                rows: 2,
+                                                placeholder: "Special songs, reminders, who walks when, speeches...",
+                                                className: "w-full rounded-md border border-sage/30 bg-white/80 px-3 py-2 text-[0.8rem] text-sage-dark shadow-sm outline-none focus:border-gold"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/timeline/page.tsx",
+                                                lineNumber: 214,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/timeline/page.tsx",
+                                        lineNumber: 210,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex justify-end",
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             type: "submit",
@@ -334,30 +385,30 @@ function TimelinePage() {
                                             children: "Add to timeline"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                            lineNumber: 176,
+                                            lineNumber: 223,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/timeline/page.tsx",
-                                        lineNumber: 175,
+                                        lineNumber: 222,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 140,
+                                lineNumber: 187,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/timeline/page.tsx",
-                        lineNumber: 111,
+                        lineNumber: 158,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/timeline/page.tsx",
-                lineNumber: 65,
+                lineNumber: 112,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -371,7 +422,7 @@ function TimelinePage() {
                                 children: "Day flow"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 190,
+                                lineNumber: 237,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -379,13 +430,13 @@ function TimelinePage() {
                                 children: "You can print this page or screenshot it for your planner, photographer or band."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 193,
+                                lineNumber: 240,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/timeline/page.tsx",
-                        lineNumber: 189,
+                        lineNumber: 236,
                         columnNumber: 9
                     }, this),
                     sortedTimeline.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -393,7 +444,7 @@ function TimelinePage() {
                         children: 'Start by adding your first moment above. Examples: "Getting ready", "Ceremony", "Photos with family", "First dance", "Cake", "Party".'
                     }, void 0, false, {
                         fileName: "[project]/src/app/timeline/page.tsx",
-                        lineNumber: 200,
+                        lineNumber: 247,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ol", {
                         className: "mt-4 space-y-3",
@@ -407,7 +458,7 @@ function TimelinePage() {
                                             children: item.time || `${index + 1}.`
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                            lineNumber: 213,
+                                            lineNumber: 260,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -424,7 +475,7 @@ function TimelinePage() {
                                                             className: "w-full rounded-md border-none bg-transparent px-0 py-0 text-[0.85rem] font-semibold text-sage-dark outline-none"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 218,
+                                                            lineNumber: 265,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -438,13 +489,13 @@ function TimelinePage() {
                                                             children: "Remove"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 227,
+                                                            lineNumber: 274,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                    lineNumber: 217,
+                                                    lineNumber: 264,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -458,7 +509,7 @@ function TimelinePage() {
                                                                     children: "Time"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 245,
+                                                                    lineNumber: 292,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -469,13 +520,13 @@ function TimelinePage() {
                                                                     className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.75rem] text-sage-dark outline-none focus:border-gold"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 248,
+                                                                    lineNumber: 295,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 244,
+                                                            lineNumber: 291,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -486,7 +537,7 @@ function TimelinePage() {
                                                                     children: "Where"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 259,
+                                                                    lineNumber: 306,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -497,13 +548,13 @@ function TimelinePage() {
                                                                     className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.75rem] text-sage-dark outline-none focus:border-gold"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 262,
+                                                                    lineNumber: 309,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 258,
+                                                            lineNumber: 305,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -514,7 +565,7 @@ function TimelinePage() {
                                                                     children: "Who"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 273,
+                                                                    lineNumber: 320,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -525,19 +576,19 @@ function TimelinePage() {
                                                                     className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.75rem] text-sage-dark outline-none focus:border-gold"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                                    lineNumber: 276,
+                                                                    lineNumber: 323,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 272,
+                                                            lineNumber: 319,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                    lineNumber: 243,
+                                                    lineNumber: 290,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -548,7 +599,7 @@ function TimelinePage() {
                                                             children: "Notes"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 288,
+                                                            lineNumber: 335,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -560,47 +611,202 @@ function TimelinePage() {
                                                             className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.75rem] text-sage-dark outline-none focus:border-gold"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                                            lineNumber: 291,
+                                                            lineNumber: 338,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                                    lineNumber: 287,
+                                                    lineNumber: 334,
+                                                    columnNumber: 21
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "mt-3 space-y-3 border-t border-sage/20 pt-3",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "space-y-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "text-[0.65rem] uppercase tracking-[0.16em] text-sage-dark/70",
+                                                                    children: "Upload images"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 352,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                    ref: (el)=>{
+                                                                        if (el) imageInputRefs.current[item.id] = el;
+                                                                    },
+                                                                    type: "file",
+                                                                    accept: "image/*",
+                                                                    onChange: (e)=>handleImageUpload(item.id, e),
+                                                                    disabled: uploadingImage[item.id],
+                                                                    className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.7rem] text-sage-dark file:rounded-md file:border-0 file:bg-gold file:px-2 file:py-0.5 file:text-white file:cursor-pointer disabled:opacity-50"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 355,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                uploadingImage[item.id] && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "text-[0.65rem] text-sage-dark/70 italic",
+                                                                    children: "Uploading..."
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 366,
+                                                                    columnNumber: 27
+                                                                }, this),
+                                                                (item.images ?? []).length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    className: "grid grid-cols-4 gap-1",
+                                                                    children: item.images.map((img)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                            className: "relative group rounded-md overflow-hidden bg-ivory border border-sage/25",
+                                                                            children: [
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                                                                    src: img.data,
+                                                                                    alt: img.name,
+                                                                                    className: "w-full h-12 object-cover"
+                                                                                }, void 0, false, {
+                                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                                    lineNumber: 375,
+                                                                                    columnNumber: 33
+                                                                                }, this),
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                    type: "button",
+                                                                                    onClick: ()=>removeTimelineImage(item.id, img.id),
+                                                                                    className: "absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[0.6rem] font-medium",
+                                                                                    children: "Remove"
+                                                                                }, void 0, false, {
+                                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                                    lineNumber: 380,
+                                                                                    columnNumber: 33
+                                                                                }, this)
+                                                                            ]
+                                                                        }, img.id, true, {
+                                                                            fileName: "[project]/src/app/timeline/page.tsx",
+                                                                            lineNumber: 371,
+                                                                            columnNumber: 31
+                                                                        }, this))
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 369,
+                                                                    columnNumber: 27
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/timeline/page.tsx",
+                                                            lineNumber: 351,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "space-y-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "text-[0.65rem] uppercase tracking-[0.16em] text-sage-dark/70",
+                                                                    children: "Upload files"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 396,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                    ref: (el)=>{
+                                                                        if (el) fileInputRefs.current[item.id] = el;
+                                                                    },
+                                                                    type: "file",
+                                                                    onChange: (e)=>handleFileUpload(item.id, e),
+                                                                    disabled: uploadingFile[item.id],
+                                                                    className: "w-full rounded-md border border-sage/25 bg-white/90 px-2 py-1 text-[0.7rem] text-sage-dark file:rounded-md file:border-0 file:bg-gold file:px-2 file:py-0.5 file:text-white file:cursor-pointer disabled:opacity-50"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 399,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                uploadingFile[item.id] && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "text-[0.65rem] text-sage-dark/70 italic",
+                                                                    children: "Uploading..."
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 409,
+                                                                    columnNumber: 27
+                                                                }, this),
+                                                                (item.files ?? []).length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                                                    className: "space-y-1",
+                                                                    children: item.files.map((file)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                                            className: "flex items-center justify-between gap-1 p-1 rounded-md bg-ivory border border-sage/25 text-[0.65rem] text-sage-dark",
+                                                                            children: [
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                                    className: "truncate",
+                                                                                    children: file.name
+                                                                                }, void 0, false, {
+                                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                                    lineNumber: 418,
+                                                                                    columnNumber: 33
+                                                                                }, this),
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                                    type: "button",
+                                                                                    onClick: ()=>removeTimelineFile(item.id, file.id),
+                                                                                    className: "flex-shrink-0 text-gold hover:text-gold/80 font-medium text-[0.6rem]",
+                                                                                    children: "✕"
+                                                                                }, void 0, false, {
+                                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                                    lineNumber: 419,
+                                                                                    columnNumber: 33
+                                                                                }, this)
+                                                                            ]
+                                                                        }, file.id, true, {
+                                                                            fileName: "[project]/src/app/timeline/page.tsx",
+                                                                            lineNumber: 414,
+                                                                            columnNumber: 31
+                                                                        }, this))
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                                    lineNumber: 412,
+                                                                    columnNumber: 27
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/timeline/page.tsx",
+                                                            lineNumber: 395,
+                                                            columnNumber: 23
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/app/timeline/page.tsx",
+                                                    lineNumber: 350,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/timeline/page.tsx",
-                                            lineNumber: 216,
+                                            lineNumber: 263,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/timeline/page.tsx",
-                                    lineNumber: 212,
+                                    lineNumber: 259,
                                     columnNumber: 17
                                 }, this)
                             }, item.id, false, {
                                 fileName: "[project]/src/app/timeline/page.tsx",
-                                lineNumber: 208,
+                                lineNumber: 255,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/timeline/page.tsx",
-                        lineNumber: 206,
+                        lineNumber: 253,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/timeline/page.tsx",
-                lineNumber: 188,
+                lineNumber: 235,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/timeline/page.tsx",
-        lineNumber: 64,
+        lineNumber: 111,
         columnNumber: 5
     }, this);
 }

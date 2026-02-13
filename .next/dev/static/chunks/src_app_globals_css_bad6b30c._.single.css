@@ -878,16 +878,6 @@
     }
   }
 
-  .border-sage\/35 {
-    border-color: #e5e7eb59;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .border-sage\/35 {
-      border-color: color-mix(in oklab, var(--color-sage) 35%, transparent);
-    }
-  }
-
   .border-sage\/40 {
     border-color: #e5e7eb66;
   }
@@ -1407,6 +1397,10 @@
     font-size: .85rem;
   }
 
+  .text-\[0\.95rem\] {
+    font-size: .95rem;
+  }
+
   .leading-tight {
     --tw-leading: var(--leading-tight);
     line-height: var(--leading-tight);
@@ -1907,12 +1901,6 @@
   }
 
   @media (min-width: 48rem) {
-    .md\:grid-cols-\[minmax\(0\,1\.2fr\)\,minmax\(0\,1\.4fr\)\] {
-      grid-template-columns: minmax(0, 1.2fr), minmax(0, 1.4fr);
-    }
-  }
-
-  @media (min-width: 48rem) {
     .md\:grid-cols-\[minmax\(0\,1\.4fr\)\,minmax\(0\,1fr\)\] {
       grid-template-columns: minmax(0, 1.4fr), minmax(0, 1fr);
     }
@@ -1921,6 +1909,12 @@
   @media (min-width: 48rem) {
     .md\:grid-cols-\[minmax\(0\,1\.6fr\)\,minmax\(0\,1fr\)\,auto\] {
       grid-template-columns: minmax(0, 1.6fr), minmax(0, 1fr), auto;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .md\:grid-cols-\[minmax\(0\,1fr\)\,minmax\(0\,1\.4fr\)\] {
+      grid-template-columns: minmax(0, 1fr), minmax(0, 1.4fr);
     }
   }
 
