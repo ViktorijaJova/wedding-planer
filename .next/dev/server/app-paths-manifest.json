@@ -1,5 +1,8 @@
 {
   "/guests/page": "app/guests/page.js",
+  "/inspo/page": "app/inspo/page.js",
   "/page": "app/page.js",
-  "/seating/page": "app/seating/page.js"
+  "/seating/page": "app/seating/page.js",
+  "/timeline/page": "app/timeline/page.js",
+  "/vendors/page": "app/vendors/page.js"
 }

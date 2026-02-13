@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Great_Vibes, Playfair_Display, Montserrat } from "next/font/google";
 import { WeddingTemplateProvider } from "@/components/wedding-template/WeddingTemplateProvider";
+import { ShareButton, DataImporter } from "@/components/wedding-template/ShareButton";
 import "./globals.css";
 import "./wedding-template.css";
 
@@ -58,11 +59,14 @@ export default function RootLayout({
                     Viktorija&apos;s Wedding Template
                   </h1>
                 </div>
-                <div className="hidden text-right md:block">
-                  <p className="font-script text-2xl text-gold leading-tight">
-                    15 August 2026
-                  </p>
-                  <p className="text-xs text-sage-dark/70">A day to remember</p>
+                <div className="flex items-center gap-3">
+                  <ShareButton />
+                  <div className="hidden text-right md:block">
+                    <p className="font-script text-2xl text-gold leading-tight">
+                      15 August 2026
+                    </p>
+                    <p className="text-xs text-sage-dark/70">A day to remember</p>
+                  </div>
                 </div>
               </div>
               <nav className="wedding-nav">
@@ -79,6 +83,7 @@ export default function RootLayout({
                 </div>
               </nav>
             </header>
+            <DataImporter />
             <main className="mx-auto max-w-6xl px-4 py-6 md:py-10">
               {children}
             </main>

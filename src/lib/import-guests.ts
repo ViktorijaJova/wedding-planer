@@ -14,9 +14,8 @@ export function getImportedGuests(): Omit<Guest, "id">[] {
   }));
 }
 
-export function getNewGuestsToImport(existingGuests: Guest[]): Omit<Guest, "id">[] {
-  const existingNames = new Set(existingGuests.map((g) => g.name.toLowerCase()));
-  return getImportedGuests().filter(
-    (guest) => !existingNames.has(guest.name.toLowerCase())
-  );
+export function getNewGuestsToImport(_existingGuests: Guest[]): Omit<Guest, "id">[] {
+  // Allow duplicate names – real weddings can have multiple people called the same name.
+  // Each guest gets a unique ID on import so duplicates are safe.
+  return getImportedGuests();
 }
